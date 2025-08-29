@@ -97,13 +97,13 @@ fd "test" --type f --max-results 5
 
 ### Step 4: Install WSL File Search Plugin
 
-#### Method 1: From Flow Launcher Plugin Store (Recommended)
+#### Method 1: From Flow Launcher Plugin Store (WILL NOT WORK AS OF NOW)
 1. Open Flow Launcher (`Alt + Space`)
 2. Type `pm install wsl file search`
 3. Select the plugin and press Enter to install
 
 #### Method 2: Manual Installation
-1. Download the latest release from the [GitHub releases page](https://github.com/Sajxx/Flow.Launcher.Plugin.WSLSearch/releases)
+1. Download the latest release from the [GitHub releases page](https://github.com/Sajxx/WSL-File-Search/releases)
 2. Extract the plugin files to:
    ```
    %APPDATA%\FlowLauncher\Plugins\WSL File Search\
