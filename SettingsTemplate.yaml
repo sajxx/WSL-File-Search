@@ -1,0 +1,14 @@
+body:
+  - type: dropdown
+    attributes:
+      name: max_results
+      label: "Max Results:"
+      description: "Maximum number of search results to display"
+      defaultValue: "5"
+      options:
+        - 5
+        - 10
+        - 15
+        - 20
+        - 30
+        - 50
