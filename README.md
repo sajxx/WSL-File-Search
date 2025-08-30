@@ -14,7 +14,7 @@ Search and open files from your WSL Ubuntu home directory directly within Flow L
 - **🎯 Intelligent Results**: Configurable result limits (5-50) to keep searches snappy and relevant  
 - **🗂️ Seamless Integration**: Open files directly in Windows Explorer with a single keystroke
 - **⌨️ Terminal Access**: Right-click context menu to open containing folders in Windows Terminal with WSL
-- **⚙️ User-Friendly Settings**: Configure maximum results through Flow Launcher's built-in settings UI
+- **⚙️ User-Friendly Settings**: Configure maximum results, WSL distro (Ubuntu/Debian), and shell (zsh/bash) through Flow Launcher's built-in settings UI
 - **🔍 Smart Filtering**: Searches both filenames and directory names with fuzzy matching
 
 ---
@@ -29,14 +29,14 @@ Before installing this plugin, ensure you have the following components properly
 |-----------|---------|---------|
 | **Windows** | 10 (Build 19041+) or 11 | Host operating system |
 | **WSL 2** | Latest | Windows Subsystem for Linux |
-| **Ubuntu** | 20.04+ | WSL distribution |
+| **Ubuntu/Debian** | 20.04+ | WSL distribution (user-selectable) |
 | **Flow Launcher** | v1.20+ | Plugin host application |
 | **fd** | Latest | Fast file finder (installed in WSL) |
 
 ### Optional Components
 
 - **Windows Terminal** - Enhanced terminal experience for WSL integration
-- **Zsh** - Modern shell (plugin optimized for zsh, but works with bash)
+- **Zsh** or **Bash** - Modern shells (user-selectable; plugin works with both)
 
 ---
 
@@ -44,7 +44,7 @@ Before installing this plugin, ensure you have the following components properly
 
 ### Step 1: Verify WSL Installation
 
-First, ensure WSL is properly installed and Ubuntu is your default distribution:
+First, ensure WSL is properly installed and your preferred distribution (Ubuntu or Debian) is installed:
 
 ```powershell
 # Check WSL status
@@ -115,7 +115,9 @@ fd "test" --type f --max-results 5
 1. Open Flow Launcher settings (`Alt + Space`, then type `settings`)
 2. Navigate to **Plugins** → **WSL File Search**
 3. Configure your preferred **Max Results** (5, 10, 15, 20, 30, or 50)
-4. Click **Save**
+4. Select your **WSL Distro** (Ubuntu or Debian)
+5. Select your **Shell** (zsh or bash)
+6. Click **Save**
 
 ---
 
@@ -167,15 +169,20 @@ Access plugin settings through Flow Launcher's settings panel:
 
 **Available Options**:
 
+
 ```json
 {
-  "max_results": "20"
+   "max_results": "20",
+   "distro": "Ubuntu",
+   "shell": "zsh"
 }
 ```
 
 | Setting | Type | Options | Default | Description |
 |---------|------|---------|---------|-------------|
 | `max_results` | string | "5", "10", "15", "20", "30", "50" | "5" | Maximum search results displayed |
+| `distro` | string | "Ubuntu", "Debian" | "Ubuntu" | WSL distribution to use for search and terminal |
+| `shell` | string | "zsh", "bash" | "zsh" | Shell to use in Windows Terminal context menu |
 
 ### Advanced Configuration
 

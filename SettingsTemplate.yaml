@@ -12,3 +12,21 @@ body:
         - 20
         - 30
         - 50
+  - type: dropdown
+    attributes:
+      name: shell
+      label: "Shell to use in WSL Terminal:"
+      description: "Choose which shell to launch in Windows Terminal (zsh or bash)"
+      defaultValue: "zsh"
+      options:
+        - zsh
+        - bash
+  - type: dropdown
+    attributes:
+      name: distro
+      label: "WSL Distro:"
+      description: "Choose which WSL distribution to use in Windows Terminal (Ubuntu or Debian)"
+      defaultValue: "Ubuntu"
+      options:
+        - Ubuntu
+        - Debian

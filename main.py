@@ -4,6 +4,13 @@ import json
 from flowlauncher import FlowLauncher
 
 class WSLSearch(FlowLauncher):
+    def get_distro(self):
+        """Return WSL distro from Settings.json, fallback to 'Ubuntu'"""
+        settings = self.load_settings()
+        distro = settings.get("distro", "Ubuntu")
+        if distro not in ("Ubuntu", "Debian"):
+            distro = "Ubuntu"
+        return distro
     DEFAULT_MAX_RESULTS = 20
 
     def load_settings(self):
@@ -25,6 +32,14 @@ class WSLSearch(FlowLauncher):
         except Exception as e:
             print("Error loading settings:", e)
         return {}
+
+    def get_shell(self):
+        """Return shell from Settings.json, fallback to 'zsh'"""
+        settings = self.load_settings()
+        shell = settings.get("shell", "zsh")
+        if shell not in ("zsh", "bash"):
+            shell = "zsh"
+        return shell
 
     def get_max_results(self):
         """Return max_results from Settings.json, fallback to default"""
@@ -112,13 +127,15 @@ class WSLSearch(FlowLauncher):
             }]
 
     def open_windows_terminal(self, directory: str):
-        """Launch Ubuntu WSL profile in Windows Terminal, starting zsh in the given directory"""
+        """Launch user-selected WSL distro/profile in Windows Terminal, starting user-selected shell in the given directory"""
         try:
+            shell = self.get_shell()
+            distro = self.get_distro()
             safe_directory = directory.replace("'", "'\\''")
             cmd = (
-                f'wt.exe -p "Ubuntu" '
-                f'wsl -d Ubuntu '
-                f'zsh -c "cd \'{safe_directory}\' && exec zsh"'
+                f'wt.exe -p "{distro}" '
+                f'wsl -d {distro} '
+                f'{shell} -c "cd \'{safe_directory}\' && exec {shell}"'
             )
             subprocess.Popen(cmd, shell=True)
         except Exception as e:
