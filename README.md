@@ -1,8 +1,8 @@
 # WSL File Search - Flow Launcher Plugin
 
-> 🚀 **Lightning-fast file search for your WSL Ubuntu environment, integrated seamlessly with Flow Launcher**
+> 🚀 **Lightning-fast file search for your WSL environment, integrated seamlessly with Flow Launcher**
 
-Search and open files from your WSL Ubuntu home directory directly within Flow Launcher. Powered by the blazing-fast `fd` command-line tool, this plugin brings WSL file discovery to your Windows desktop workflow.
+Search and open files from your WSL home directory directly within Flow Launcher. Powered by the blazing-fast `fd` command-line tool, this plugin brings WSL file discovery to your Windows desktop workflow.
 
 ![Plugin Demo](https://img.shields.io/badge/Flow_Launcher-Plugin-blue) ![WSL](https://img.shields.io/badge/WSL-Ubuntu-orange) ![Python](https://img.shields.io/badge/Python-3.7+-green)
 
@@ -142,7 +142,7 @@ wslf src/            # Find directories named 'src'
 ### Available Actions
 
 | Action | Shortcut | Description |
-|--------|----------|-------------|
+|--------|----------|-------------| 
 | **Open in Explorer** | `Enter` | Opens the file/folder in Windows File Explorer |
 | **Open in Terminal** | `Right Arrow + Enter` | Opens containing directory in Windows Terminal (WSL) |
 | **Context Menu** | `Right Click` or `Ctrl + Enter` | Shows additional actions |

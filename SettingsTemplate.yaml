@@ -4,7 +4,7 @@ body:
       name: max_results
       label: "Max Results:"
       description: "Maximum number of search results to display"
-      defaultValue: "5"
+      defaultValue: "20"
       options:
         - 5
         - 10
@@ -12,6 +12,7 @@ body:
         - 20
         - 30
         - 50
+        - 100
   - type: dropdown
     attributes:
       name: shell
@@ -25,8 +26,52 @@ body:
     attributes:
       name: distro
       label: "WSL Distro:"
-      description: "Choose which WSL distribution to use in Windows Terminal (Ubuntu or Debian)"
+      description: "Choose which WSL distribution to use in Windows Terminal"
       defaultValue: "Ubuntu"
       options:
         - Ubuntu
         - Debian
+  - type: dropdown
+    attributes:
+      name: cache_ttl
+      label: "Cache Duration (minutes):"
+      description: "How long to keep search results cached"
+      defaultValue: "5"
+      options:
+        - 1
+        - 2
+        - 5
+        - 10
+        - 15
+        - 30
+  - type: dropdown
+    attributes:
+      name: search_depth
+      label: "Maximum Search Depth:"
+      description: "Limit search depth to improve performance (0 = no limit)"
+      defaultValue: "0"
+      options:
+        - 0
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+  - type: textbox
+    attributes:
+      name: exclude_dirs
+      label: "Exclude Directories:"
+      description: "Comma-separated list of directories to exclude (e.g., .git,node_modules,.cache)"
+      defaultValue: ".git,node_modules,__pycache__,.cache,.npm"
+  - type: checkbox
+    attributes:
+      name: enable_background_indexing
+      label: "Enable Background Indexing"
+      description: "Pre-index common directories for faster searches"
+      defaultValue: true
+  - type: checkbox
+    attributes:
+      name: show_file_extensions
+      label: "Show File Extensions in Results"
+      description: "Display file type information in search results"
+      defaultValue: true
