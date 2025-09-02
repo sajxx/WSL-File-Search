@@ -4,7 +4,7 @@
   "Name": "WSL File Search",
   "Description": "Search files inside \\\\wsl$\\Ubuntu\\ using fd",
   "Author": "Sajxx",
-  "Version": "1.0.0",
+  "Version": "1.2.0",
   "Language": "python",
   "Website": "https://github.com/Sajxx/Flow.Launcher.Plugin.WSLSearch",
   "ExecuteFileName": "main.py",

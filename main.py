@@ -3,7 +3,21 @@ import os
 import json
 import threading
 import re
-from flowlauncher import FlowLauncher
+import sys
+
+# Add bundled dependencies to Python path BEFORE importing flowlauncher
+parent_folder_path = os.path.abspath(os.path.dirname(__file__))
+lib_folder_path = os.path.join(parent_folder_path, "lib")
+sys.path.insert(0, lib_folder_path)
+
+# import flowlauncher from bundled dependencies
+try:
+    from flowlauncher import FlowLauncher
+except ImportError as e:
+    # Fallback error handling
+    print(f"Error importing flowlauncher: {e}")
+    print(f"Looking for flowlauncher in: {lib_folder_path}")
+    sys.exit(1)
 
 class WSLSearch(FlowLauncher):
     def left_truncate_path(self, path, max_length=50, keep_dirs=3):
@@ -33,6 +47,7 @@ class WSLSearch(FlowLauncher):
         # If still too long, truncate last dir
         truncated_last = last[-(max_length-4):]
         return f".../{truncated_last}"
+    
     def __init__(self):
         super().__init__()
         # Warm up WSL in background on plugin load
@@ -43,7 +58,7 @@ class WSLSearch(FlowLauncher):
         try:
             subprocess.run("wsl echo warmup", shell=True, capture_output=True, timeout=3)
         except:
-            pass  # Ignore warmup failuresA
+            pass  # Ignore warmup failures
 
     def get_distro(self):
         """Return WSL distro from Settings.json, fallback to 'Ubuntu'"""
@@ -179,13 +194,19 @@ class WSLSearch(FlowLauncher):
             pattern = '.'  # match anything
         pattern_quoted = self._shell_escape_single(pattern)
         ext_flags = ' '.join(f"-e {self._shell_escape_single(e)}" for e in exts)
-        # Compose command executed inside bash -c "..."
+        
+        # Get the configured distro and shell
+        distro = self.get_distro()
+        shell = self.get_shell()
+        
+        # Compose command executed inside the specified distro
         inner = (
-            f"command -v fd >/dev/null 2>&1 && fd --threads 4 --max-results {max_results} "
+            f"command -v fdfind >/dev/null 2>&1 && fdfind --threads 4 --max-results {max_results} "
             f"{ext_flags} {pattern_quoted} ~ 2>/dev/null"
         ).strip()
-        # Wrap for wsl invocation
-        return f"wsl bash -c \"{inner}\""
+        
+        # Use the configured distro instead of default
+        return f"wsl -d {distro} {shell} -c \"{inner}\""
 
     def context_menu(self, data):
         """Provide context menu with only Windows Terminal option"""
