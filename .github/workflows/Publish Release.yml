@@ -1,0 +1,67 @@
+name: Publish Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths-ignore: 
+      - .github/workflows/*
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      python_ver: 3.8
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Set up Python ${{ env.python_ver }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.python_ver }}
+          
+      - name: Get version from plugin.json
+        id: version
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: 'plugin.json'
+          prop_path: 'Version'
+          
+      - run: echo "Plugin version is ${{steps.version.outputs.prop}}"
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flowlauncher -t ./lib
+          zip -r Flow.Launcher.Plugin.WSLSearch.zip . -x '*.git*' -x '.github/*' -x '__pycache__/*'
+          
+      - name: Publish Release
+        if: success()
+        uses: softprops/action-gh-release@v1
+        with:
+          files: 'Flow.Launcher.Plugin.WSLSearch.zip'
+          tag_name: "v${{steps.version.outputs.prop}}"
+          body: |
+            **WSL File Search Plugin v${{steps.version.outputs.prop}}**
+            
+            Search files inside WSL using fd with seamless Windows integration.
+            
+            **Features:**
+            - ⚡ Ultra-fast search using fd
+            - 🎯 Configurable result limits
+            - 🗂️ Open files in Windows Explorer
+            - ⌨️ Terminal access via Windows Terminal
+            - ⚙️ User-friendly settings
+            
+            **Installation:**
+            1. Download Flow.Launcher.Plugin.WSLSearch.zip
+            2. Extract to: `%APPDATA%\FlowLauncher\Plugins\WSL File Search\`
+            3. Restart Flow Launcher
+            4. Use `wslf` keyword to search WSL files
+            
+            **Requirements:**
+            - WSL 2 with Ubuntu/Debian
+            - fd installed in WSL (`sudo apt install fd-find`)
+            - Flow Launcher v1.20+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
