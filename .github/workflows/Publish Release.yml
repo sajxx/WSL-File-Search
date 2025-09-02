@@ -7,6 +7,12 @@ on:
     paths-ignore: 
       - .github/workflows/*
 
+# Add this permissions block
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -54,7 +60,7 @@ jobs:
             - ⚙️ User-friendly settings
             
             **Installation:**
-            1. Download WSLSearch(${steps.version.outputs.prop}).zip
+            1. Download Flow.Launcher.Plugin.WSLSearch.zip
             2. Extract to: `%APPDATA%\FlowLauncher\Plugins\WSL File Search\`
             3. Restart Flow Launcher
             4. Use `wslf` keyword to search WSL files
