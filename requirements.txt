@@ -1,1 +1,1 @@
-"flowlauncher>=0.2.0" 
+flowlauncher>=0.2.0
