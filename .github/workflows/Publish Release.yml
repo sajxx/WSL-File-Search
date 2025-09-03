@@ -113,16 +113,16 @@ jobs:
           find "WSL File Search" -type f
           
           # Create zip file
-          zip -r "../WSL File Search.zip" "WSL File Search/"
+          zip -r "../WSL File Search-v${{steps.version.outputs.prop}}.zip" "WSL File Search/"
           
           # Verify zip was created
           cd ..
           echo "Package created:"
-          ls -la "WSL File Search.zip"
+          ls -la "WSL File Search-v${{steps.version.outputs.prop}}.zip"
           
           # Show zip contents for verification
           echo "Zip contents:"
-          unzip -l "WSL File Search.zip" | head -20
+          unzip -l "WSL File Search-v${{steps.version.outputs.prop}}.zip" | head -20
           
       - name: Publish Release
         if: success()
