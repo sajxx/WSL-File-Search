@@ -9,7 +9,6 @@ on:
       - README.md
       - .gitignore
 
-# Add this permissions block
 permissions:
   contents: write
   issues: write
@@ -40,9 +39,9 @@ jobs:
       - name: Create requirements.txt if not exists
         run: |
           if [ ! -f requirements.txt ]; then
-            echo "flowlauncher>=1.0.0" > requirements.txt
+            echo "flowlauncher>=0.2.0" > requirements.txt
           fi
-          
+
       - name: Install dependencies to lib directory
         run: |
           python -m pip install --upgrade pip
