@@ -120,9 +120,20 @@ class WSLSearch(FlowLauncher):
         try:
             # Use timeout to prevent hanging
             output = subprocess.check_output(cmd, shell=True, text=True, timeout=10)
+            lines = output.splitlines()
+
+            if lines and lines[0] == 'FD_NOT_INSTALLED':
+                return [{
+                    "Title": "fd-find is not installed in WSL",
+                    "SubTitle": "Please install fd-find in your WSL distribution (e.g., sudo apt install fd-find) and create the symlink as per README instructions.",
+                    "IcoPath": "icon.png"
+                }]
+
             results = []
 
-            for line in output.splitlines():
+            for line in lines:
+                if not line.strip():
+                    continue
                 # Simplified directory detection - avoid extra subprocess calls
                 if line.endswith('/') or '.' not in os.path.basename(line):
                     directory = line
@@ -142,6 +153,13 @@ class WSLSearch(FlowLauncher):
                     },
                     "ContextData": [directory]
                 })
+
+            if not results:
+                return [{
+                    "Title": "No results",
+                    "SubTitle": f"No matches for '{query}'",
+                    "IcoPath": "icon.png"
+                }]
 
             return results
 
@@ -201,8 +219,12 @@ class WSLSearch(FlowLauncher):
         
         # Compose command executed inside the specified distro
         inner = (
-            f"command -v fdfind >/dev/null 2>&1 && fdfind --threads 4 --max-results {max_results} "
-            f"{ext_flags} {pattern_quoted} ~ 2>/dev/null"
+            f"if command -v fdfind >/dev/null 2>&1; then "
+            f"  fdfind --threads 4 --max-results {max_results} "
+            f"  {ext_flags} {pattern_quoted} ~ 2>/dev/null; "
+            f"else "
+            f"  echo 'FD_NOT_INSTALLED'; "
+            f"fi"
         ).strip()
         
         # Use the configured distro instead of default
