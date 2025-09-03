@@ -6,6 +6,8 @@ on:
     branches: [ main ]
     paths-ignore: 
       - .github/workflows/*
+      - README.md
+      - .gitignore
 
 # Add this permissions block
 permissions:
@@ -19,10 +21,10 @@ jobs:
     env:
       python_ver: 3.8
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       
       - name: Set up Python ${{ env.python_ver }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ env.python_ver }}
           
@@ -35,11 +37,31 @@ jobs:
           
       - run: echo "Plugin version is ${{steps.version.outputs.prop}}"
       
-      - name: Install dependencies
+      - name: Create requirements.txt if not exists
+        run: |
+          if [ ! -f requirements.txt ]; then
+            echo "flowlauncher>=1.0.0" > requirements.txt
+          fi
+          
+      - name: Install dependencies to lib directory
         run: |
           python -m pip install --upgrade pip
-          pip install flowlauncher -t ./lib
-          zip -r Flow.Launcher.Plugin.WSLSearch.zip . -x '*.git*' -x '.github/*' -x '__pycache__/*'
+          pip install -r requirements.txt -t ./lib
+          
+      - name: Clean up lib directory
+        run: |
+          find ./lib -name "*.pyc" -delete
+          find ./lib -name "__pycache__" -type d -exec rm -rf {} +
+          find ./lib -name "*.dist-info" -type d -exec rm -rf {} +
+          
+      - name: Create plugin package
+        run: |
+          mkdir -p "WSL File Search"
+          cp -r . "WSL File Search/"
+          cd "WSL File Search"
+          rm -rf .git .github .gitignore requirements.txt
+          cd ..
+          zip -r "WSL File Search.zip" "WSL File Search/"
           
       - name: Publish Release
         if: success()
