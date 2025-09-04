@@ -4,7 +4,7 @@
   "Name": "WSL File Search",
   "Description": "Search files inside WSL using fd with seamless Windows integration",
   "Author": "Sajxx",
-  "Version": "1.2.2",
+  "Version": "1.2.3",
   "Language": "python",
   "Website": "https://github.com/sajxx/WSL-File-Search",
   "ExecuteFileName": "main.py",
