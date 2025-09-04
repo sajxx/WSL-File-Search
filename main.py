@@ -102,8 +102,14 @@ class WSLSearch(FlowLauncher):
         settings = self.load_settings()
         return int(settings.get("max_results", self.DEFAULT_MAX_RESULTS))
 
+    def get_search_depth(self):
+        """Return search_depth from Settings.json, fallback to 0 (no limit)"""
+        settings = self.load_settings()
+        return int(settings.get("search_depth", 0))
+
     def query(self, query: str):
         max_results = self.get_max_results()
+        search_depth = self.get_search_depth()
         parsed = self._parse_query(query)
         pattern = parsed["pattern"]
         exts = parsed["extensions"]
@@ -115,7 +121,7 @@ class WSLSearch(FlowLauncher):
                 "IcoPath": "icon.png"
             }]
 
-        cmd = self._build_fd_command(pattern, exts, max_results)
+        cmd = self._build_fd_command(pattern, exts, max_results, search_depth)
 
         try:
             # Use timeout to prevent hanging
@@ -142,9 +148,14 @@ class WSLSearch(FlowLauncher):
 
                 display_path = self.left_truncate_path(line, 55)
 
+                # Create subtitle with depth info if depth limit is active
+                subtitle = "Open in Explorer • Right Arrow + Enter to open in Terminal"
+                if search_depth > 0:
+                    subtitle += f" • Max depth: {search_depth}"
+
                 results.append({
                     "Title": display_path,
-                    "SubTitle": "Open in Explorer • Right Arrow + Enter to open in Terminal",
+                    "SubTitle": subtitle,
                     "IcoPath": "icon.png",
                     "JsonRPCAction": {
                         "method": "open_path",
@@ -206,12 +217,15 @@ class WSLSearch(FlowLauncher):
         """Escape a string for safe inclusion inside single quotes in a bash command."""
         return "'" + s.replace("'", "'" + '"' + "'" + "'") + "'"  # conservative; rarely hit
 
-    def _build_fd_command(self, pattern: str, exts, max_results: int):
+    def _build_fd_command(self, pattern: str, exts, max_results: int, search_depth: int):
         # Base inside the bash -c string
         if not pattern:
             pattern = '.'  # match anything
         pattern_quoted = self._shell_escape_single(pattern)
         ext_flags = ' '.join(f"-e {self._shell_escape_single(e)}" for e in exts)
+        
+        # Add max-depth flag if search_depth > 0
+        depth_flag = f"--max-depth {search_depth}" if search_depth > 0 else ""
         
         # Get the configured distro and shell
         distro = self.get_distro()
@@ -221,7 +235,7 @@ class WSLSearch(FlowLauncher):
         inner = (
             f"if command -v fdfind >/dev/null 2>&1; then "
             f"  fdfind --threads 4 --max-results {max_results} "
-            f"  {ext_flags} {pattern_quoted} ~ 2>/dev/null; "
+            f"  {depth_flag} {ext_flags} {pattern_quoted} ~ 2>/dev/null; "
             f"else "
             f"  echo 'FD_NOT_INSTALLED'; "
             f"fi"
