@@ -166,20 +166,36 @@ class WSLSearch(FlowLauncher):
                 })
 
             if not results:
+                # Enhanced no results message when max depth is active
+                if search_depth > 0:
+                    return [{
+                        "Title": "No results",
+                        "SubTitle": f"No matches for '{query}' within {search_depth} directory levels. Try increasing max depth in settings or set to 0 for no limit.",
+                        "IcoPath": "icon.png"
+                    }]
+                else:
+                    return [{
+                        "Title": "No results",
+                        "SubTitle": f"No matches for '{query}'",
+                        "IcoPath": "icon.png"
+                    }]
+
+            return results
+
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+            # Enhanced error message when max depth is active
+            if search_depth > 0:
+                return [{
+                    "Title": "No results",
+                    "SubTitle": f"No matches for '{query}' within {search_depth} directory levels. Try increasing max depth in settings or set to 0 for no limit.",
+                    "IcoPath": "icon.png"
+                }]
+            else:
                 return [{
                     "Title": "No results",
                     "SubTitle": f"No matches for '{query}'",
                     "IcoPath": "icon.png"
                 }]
-
-            return results
-
-        except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
-            return [{
-                "Title": "No results",
-                "SubTitle": f"No matches for '{query}'",
-                "IcoPath": "icon.png"
-            }]
 
     # ---------------------- Query Parsing & Command Building ----------------------
     def _parse_query(self, raw: str):
